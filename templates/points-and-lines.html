@@ -1,0 +1,98 @@
+python<!--THIS CODE MAKES USE OF WORK BY TOM GARTY-->
+<!--ALS0 https://jsfiddle.net/jdrucvqg/-->
+<!--ALSO https://gist.github.com/anthonyeden/69c6eee056d61fcaaad9159058952309)-->
+
+<!doctype html>
+<html lang="en">
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/openlayers/4.6.4/ol.css" type="text/css">
+<style>
+.map {
+    height: 800px;
+    width: 100%;
+    }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/openlayers/4.6.4/ol.js"></script>
+<title>Location Tracker</title>
+</head>
+<body>
+<h2>Location Tracker</h2>
+<div id="map" class="map"></div>
+<script type="text/javascript">
+        
+function initialize_map(lon, lat) {
+    var map = new ol.Map({
+        target: 'map',
+        layers: [
+            new ol.layer.Tile({
+                source: new ol.source.OSM()
+            })
+        ],
+        view: new ol.View({
+            center: ol.proj.fromLonLat([ -1.496947, 52.407633]),
+            zoom: 15
+        })
+    });
+    //add function call to add lines here.
+    //function takes three arguments
+}
+ 
+function add_lines() {    //add three function arguments
+    for (i=0; i<lat.length-1; i++) 
+    { 
+        var loc1 = ol.proj.fromLonLat([lon[i],lat[i]]);
+        var loc2 = ol.proj.fromLonLat([lon[i+1],lat[i+1]]);
+        //you may need to change the datatype stored or retrieved from your
+        //database. this will not work if it's a string
+        //console.log(loc1) - useful to check the above (prints to browser console)
+        //console.log(loc2)
+        var lineStyle = [
+	        new ol.style.Style({
+		        stroke: new ol.style.Stroke({
+				color: '#d12710',
+				width: 2
+				})
+		    })
+	    ];  			
+        var myLine = new ol.layer.Vector({
+		    source: new ol.source.Vector({
+			    features: [new ol.Feature({
+			    geometry: new ol.geom.LineString([loc1, loc2]),
+			    name: 'Line',
+				})]
+			})
+        });
+        myLine.setStyle();            //add argument here
+		map.addLayer();               //add argument here
+    }
+    //add function call to add lines here.
+    //function takes three arguments
+}
+    
+function add_points() {      //add three function arguments
+    for (i=0; i<lat.length; i++) 
+    { 
+        var vectorLayer = new ol.layer.Vector({
+            source:new ol.source.Vector({
+                features: [new ol.Feature({
+                geometry: new ol.geom.Point(ol.proj.transform([lon[i],lat[i]], 'EPSG:4326', 'EPSG:3857')),                     
+                })] 
+            }),            
+            style: new ol.style.Style({
+                image: new ol.style.Icon({
+                    anchor: [0.5, 0.5],
+                    anchorXUnits: "fraction",
+                    anchorYUnits: "fraction",
+                    src: "https://upload.wikimedia.org/wikipedia/commons/e/ec/RedDot.svg" //get an image for our red dot
+                    })
+                })
+            });
+            map.addLayer();  //add argument here
+    }
+    //add_lines(lon,lat,map)    
+}
+    
+</script>
+<body onload="initialize_map({{  }},{{  }});"></body> <!--add 2 data structures here which need to be generated as part of your template-->
+</body>
+</html>

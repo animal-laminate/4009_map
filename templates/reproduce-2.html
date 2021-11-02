@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/openlayers/4.6.4/ol.css" type="text/css">
+    <style>
+      .map {
+        height: 800px;
+        width: 100%;
+      }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/openlayers/4.6.4/ol.js"></script>
+    <title>Location Tracker</title>
+  </head>
+  <body>
+    <h2>Location Tracker</h2>
+    <div id="map" class="map"></div>
+    <script type="text/javascript">
+        
+function initialize_map_and_add_lines(lon,lat) {
+      var map = new ol.Map({
+        target: 'map',
+        layers: [
+          new ol.layer.Tile({
+            source: new ol.source.OSM()
+          })
+        ],
+        view: new ol.View({
+          center: ol.proj.fromLonLat([ -1.496947, 52.407633]),
+          zoom: 15
+        })
+      });
+       for (i=0; i<lat.length-1; i++) 
+    { 
+        var test1 = ol.proj.fromLonLat([lon[i],lat[i]]);
+        var test2 = ol.proj.fromLonLat([lon[i+1],lat[i+1]]);
+        //console.log(test1)
+        //console.log(test2)
+      
+      var linie2style = [
+				// linestring
+				new ol.style.Style({
+				  stroke: new ol.style.Stroke({
+					color: '#d12710',
+					width: 2
+				  })
+				})
+			  ];
+			  			
+			var linie2 = new ol.layer.Vector({
+					source: new ol.source.Vector({
+					features: [new ol.Feature({
+						geometry: new ol.geom.LineString([test1, test2]),
+						name: 'Line',
+					})]
+				})
+			});
+        var vectorLayer = new ol.layer.Vector({
+            source:new ol.source.Vector({
+                features: [new ol.Feature({
+                geometry: new ol.geom.Point(ol.proj.transform([lon[i],lat[i]], 'EPSG:4326', 'EPSG:3857')),                     
+                })] 
+             }),            
+            style: new ol.style.Style({
+                image: new ol.style.Icon({
+                    anchor: [0.5, 0.5],
+                    anchorXUnits: "fraction",
+                    anchorYUnits: "fraction",
+                    src: "https://upload.wikimedia.org/wikipedia/commons/e/ec/RedDot.svg" //get an image for our red dot
+                    })
+                })
+            });
+			
+			linie2.setStyle(linie2style);
+			map.addLayer(linie2);
+            map.addLayer(vectorLayer);
+    }
+    
+}
+        
+
+      
+   
+      
+    </script>
+      <body onload="initialize_map_and_add_lines({{ longitudes }},{{ latitudes }});"></body>
+  </body>
+</html>
